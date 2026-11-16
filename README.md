@@ -141,6 +141,8 @@ To run the eval cases:
 claude plugin eval . --allow-tools Write,Edit,Bash
 ```
 
+The run does each case with the plugin and without it. Each case has a grader `00-skill-loaded`. It shows if the skill loaded, and it does not count in the score. If the skill did not load, the score of that case says nothing about the skill.
+
 Rules for a change to the skill:
 
 - Write in the style that the skill teaches.

@@ -5,7 +5,7 @@ timeout_seconds: 600
 allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
 ---
 
-rewrite the draft below so it sounds like me. first a sample of how I write, then the draft. save it as update.md
+this draft sounds like chatgpt wrote it. rewrite it so it sounds like me. first a sample of how I write, then the draft. save it as update.md
 
 my writing:
 "Shipped the importer on Tuesday — finally. It's slower than I'd like (about 40 rows a second), but it doesn't lose data anymore, which was the whole point. Next up: retries. I'm not thrilled about the queue design — we'll see."
