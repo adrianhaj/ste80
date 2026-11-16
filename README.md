@@ -131,7 +131,7 @@ shellcheck skills/ste80/scripts/ste_check.sh tests/test_ste_check.sh
 claude plugin validate .
 ```
 
-CI runs the tests with gawk, mawk, busybox awk and the BWK awk that macOS uses. To test one awk yourself, set `STE_AWK`, for example `STE_AWK=mawk sh tests/test_ste_check.sh`.
+CI runs the tests with gawk, mawk, busybox awk and the BWK awk that macOS uses. It also runs them in Git Bash on Windows. To test one awk yourself, set `STE_AWK`, for example `STE_AWK=mawk sh tests/test_ste_check.sh`.
 
 `tests/expected/` holds the output that the checker must give for `tests/fixtures/sample.md`. If you change a rule on purpose, read the new output, then write it to those files.
 
