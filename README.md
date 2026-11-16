@@ -101,7 +101,7 @@ STE fixes sentence structure. It does not remove chatbot phrases, so Pass 1 does
 | `skills/ste80/references/word-swaps.md` | More than 100 plain-word swaps |
 | `skills/ste80/references/worked-example.md` | One text after Pass 1 and after Pass 2 |
 | `skills/ste80/scripts/ste_check.sh`, `ste_check.awk` | The checker |
-| `evals/` | Four cases in the `claude plugin eval` format |
+| `evals/` | Eight cases in the `claude plugin eval` format |
 | `tests/` | Tests for the checker |
 
 The skill reports its edits by number, for example "§1, §8, S2", so you can look each one up.

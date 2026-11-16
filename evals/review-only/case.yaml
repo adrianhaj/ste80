@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: review-only
+expected_outcome: |
+  A review, not a rewrite: a list of the AI tells with a short quote for each (the "isn't just ... it's" contrast, the dash, the three adjectives, the stock words, the closer "That's the real win."), and no file written.
