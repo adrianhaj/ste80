@@ -38,7 +38,7 @@ status=0
 for f do
     if [ "$f" = - ]; then
         check -
-    elif [ -f "$f" ] && [ -r "$f" ]; then
+    elif [ -r "$f" ] && [ ! -d "$f" ]; then
         # shellcheck disable=SC2094 # the first "$f" is only the name to print
         check "$f" <"$f"
     else

@@ -26,6 +26,12 @@ exits_on() { # expected exit code, text for standard input, checker options...
     [ $? -eq "$want" ]
 }
 
+finds() { # pattern in the output, text for standard input, checker options...
+    pattern=$1 text=$2
+    shift 2
+    printf '%s\n' "$text" | check "$@" - | grep -q -- "$pattern"
+}
+
 check tests/fixtures/sample.md | diff tests/expected/sample.txt -
 ok "fixture gives the expected findings" $?
 
@@ -56,6 +62,31 @@ ok "strict mode adds word rules" $?
 # shellcheck disable=SC2016
 exits_on 0 'Run `rm -rf build; make` and read https://example.com/a;b first.'
 ok "code and URLs are not prose" $?
+
+finds "not-x-but-y" "It’s not just a cache." && finds "contraction" "It isn’t safe." --strict
+ok "curly apostrophes match like straight ones" $?
+
+finds "'leverages' -> use" "It leverages Redis." && finds "'utilizing' -> use" "We are utilizing it." &&
+    finds "'verified' -> make sure" "We verified it." && exits_on 0 "The employee left through the main hall." &&
+    finds "'follow' -> obey" "Follow the steps." --strict && exits_on 0 "Following the restart, logging is on." --strict
+ok "word rules match inflected forms" $?
+
+finds '^ *2  sentence-length .*: Run the import, then wait \.\.\.$' 'Short one.
+Run the import, then wait until every row from the old table is in the new table and the two counts agree with the report that the tool prints.'
+ok "a long sentence is reported with its own line and first words" $?
+
+exits_on 0 '## Install the thing
+Run the import, then wait until every row from the old table is in the new table and the counts agree now.'
+ok "a heading is not part of the next sentence" $?
+
+finds ' 3 sentences' "Read the docs at https://example.com/docs. Then run the tool. Then stop."
+ok "a URL does not take the period that ends the sentence" $?
+
+finds "dash" "The pump is open – the valve is shut." && exits_on 0 "It takes 10–15 minutes."
+ok "a spaced en dash is a dash, a number range is not" $?
+
+cat tests/fixtures/clean.md | check /dev/stdin >/dev/null 2>&1
+ok "a file that is not a regular file can be read" $?
 
 exits 2
 ok "no file is a usage error" $?

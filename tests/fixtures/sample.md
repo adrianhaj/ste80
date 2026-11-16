@@ -41,3 +41,6 @@ echo "this is ignored; it has been written — by hand"
     indented code is skipped; it was leveraged
 
 The pump is open -- the valve is closed.
+
+## Next steps
+It’s not just a tool. Read https://example.com/docs. Then stop – and wait.

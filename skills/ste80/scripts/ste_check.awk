@@ -10,12 +10,19 @@ function set(arr, list,   n, i, tmp) {
     for (i = 1; i <= n; i++) arr[tmp[i]] = 1
 }
 
-function swaps(list,   n, i, p, tmp) {
+# A single word of four letters or more also matches with a verb or plural
+# ending: use, uses, used, using; verify, verifies, verified, verifying.
+# The strict list is exact: its short common words give too many false matches.
+function swaps(list, exact,   n, i, p, w, tmp) {
     n = split(list, tmp, "|")
     for (i = 1; i <= n; i++) {
         p = index(tmp[i], "=")
-        SWW[++nsw] = substr(tmp[i], 1, p - 1)
-        SWA[nsw] = substr(tmp[i], p + 1)
+        w = substr(tmp[i], 1, p - 1)
+        SWA[++nsw] = substr(tmp[i], p + 1)
+        if (exact || w !~ /^[a-z][a-z][a-z][a-z]+$/) { SWW[nsw] = w; SWE[nsw] = "^" HY }
+        else if (w ~ /e$/) { SWW[nsw] = substr(w, 1, length(w) - 1); SWE[nsw] = "^(e|es|ed|ing)" HY }
+        else if (w ~ /[^aeiou]y$/) { SWW[nsw] = substr(w, 1, length(w) - 1); SWE[nsw] = "^(y|ies|ied|ying)" HY }
+        else { SWW[nsw] = w; SWE[nsw] = "^(s|es|ed|ing)?" HY }
     }
 }
 
@@ -30,6 +37,7 @@ BEGIN {
     SEP = "\001"
     W = "[a-z0-9_]"
     NW = "[^a-z0-9_]"
+    HY = "[^a-z0-9_-]"
     WS = "[ \t]+"
     AUX = "(am|is|are|was|were|be|been|being)"
 
@@ -61,10 +69,10 @@ BEGIN {
     swaps("cutting-edge=(fact or delete)|world-class=(fact or delete)|best-in-class=(fact or delete)")
     swaps("renowned=(fact or delete)|stunning=(delete)|breathtaking=(delete)|serves as=is|stands as=is|boasts=has")
     if (strict) {
-        swaps("need=necessary (adj)|may=can|might=can|could=can|should=must|shall=must|would=will|since=because")
-        swaps("both=the two|further=more|additional=more|acceptable=permitted|main=primary|portion=part")
-        swaps("required=necessary|insert=put|rotate=turn|avoid=prevent|follow=obey|inspect=examine")
-        swaps("e.g.=for example|i.e.=that is|etc.=and other")
+        swaps("need=necessary (adj)|may=can|might=can|could=can|should=must|shall=must|would=will|since=because", 1)
+        swaps("both=the two|further=more|additional=more|acceptable=permitted|main=primary|portion=part", 1)
+        swaps("required=necessary|insert=put|rotate=turn|avoid=prevent|follow=obey|inspect=examine", 1)
+        swaps("e.g.=for example|i.e.=that is|etc.=and other", 1)
     }
 
     nph = split("set up|find out|look into|look at|fill in|fill out|turn on|turn off|switch on|switch off|go through|point out|put together|take out|come up with|give up|carry out|figure out|check out|back up|shut down", PHRASAL, "|")
@@ -74,7 +82,7 @@ BEGIN {
     set(IMPERATIVE, "add apply attach click close configure connect copy create delete disconnect do download edit enter examine find get give install keep let make measure monitor move open push pull put read remove replace restart run select send set start stop turn type update upload use write if when before after to")
 
     tell(NW "(it'?s|it is|this is|that'?s|is)" WS "not" WS "(just|only|merely|simply|about)" NW, "not-x-but-y", "'not just X, but Y' framing: state the point")
-    tell("", "not-x-but-y", "'not just X but Y' framing: state the point")  # see not_only_but()
+    tell("", "not-x-but-y", "'not just X but Y' framing: state the point")  # no pattern: see not_only_but()
     tell(NW "isn'?t" WS "(just" WS ")?about" NW, "not-x-but-y", "'this isn't about X' framing: state the point")
     tell("^ (great question|certainly|of course|sure|absolutely)[!,.]", "chatbot", "chatbot opener: delete")
     tell(NW "(i hope this helps|let me know if|would you like me to|feel free to|happy to help)" NW, "chatbot", "chatbot closer: delete")
@@ -112,16 +120,18 @@ function unlink(s,   m, p) {
     return s
 }
 
-function keep(s, n) {
+# pos is where s starts in the paragraph.
+function keep(s, n, pos) {
     gsub(SEP, ".", s)
-    sub(/^[ \t]+/, "", s)
+    if (match(s, /^[ \t]+/)) { pos += RLENGTH; s = substr(s, RLENGTH + 1) }
     sub(/[ \t]+$/, "", s)
-    if (s != "") SENT[++n] = s
+    if (s != "") { SENT[++n] = s; SPOS[n] = pos }
     return n
 }
 
-# Splits a paragraph into SENT[1..n]. A period after an abbreviation does not end a sentence.
-function split_sentences(p,   n, seg) {
+# Splits a paragraph into SENT[1..n], with the start of each one in SPOS.
+# A period after an abbreviation does not end a sentence.
+function split_sentences(p,   n, seg, pos, skip) {
     p = " " p
     while (match(p, /[^A-Za-z0-9_](e\.g|i\.e|etc|vs|Dr|Mr|Ms|No)\./)) {
         seg = substr(p, RSTART + 1, RLENGTH - 1)
@@ -129,11 +139,29 @@ function split_sentences(p,   n, seg) {
         p = substr(p, 1, RSTART) seg substr(p, RSTART + RLENGTH)
     }
     n = 0
+    pos = 0
     while (match(p, /[.!?:][ \t]+[A-Z0-9"'(]/)) {
-        n = keep(substr(p, 1, RSTART), n)
-        p = substr(p, RSTART + RLENGTH - 1)
+        seg = substr(p, 1, RSTART)
+        skip = RSTART + RLENGTH - 2
+        p = substr(p, skip + 1)
+        n = keep(seg, n, pos)  # keep() calls match(), so it comes after RSTART is used
+        pos += skip
     }
-    return keep(p, n)
+    return keep(p, n, pos)
+}
+
+# The line that holds position pos of the paragraph.
+function line_of(pos,   k) {
+    for (k = plen; k > 1 && LPOS[k] > pos; k--) ;
+    return LNO[k]
+}
+
+function first_words(s,   n, i, w, out) {
+    n = split(s, w, " ")
+    if (n <= 5) return s
+    out = w[1]
+    for (i = 2; i <= 5; i++) out = out " " w[i]
+    return out " ..."
 }
 
 # Parentheses and quoted text count as one word. So does a number with its unit.
@@ -167,7 +195,7 @@ function flush(   n, i, c, lim) {
     if (!plen) return
     n = split_sentences(para)
     npara++
-    if (n > 6) add(pstart, "paragraph-length", n " sentences in one paragraph (max 6)")
+    if (n > 6) add(LNO[1], "paragraph-length", n " sentences in one paragraph (max 6)")
     for (i = 1; i <= n; i++) {
         c = count_words(SENT[i])
         nsent++
@@ -175,7 +203,7 @@ function flush(   n, i, c, lim) {
         if (c > maxw) maxw = c
         lim = imperative(SENT[i]) ? 20 : 25
         if (c > lim + (strict ? 0 : 3))
-            add(pstart, "sentence-length", c " words (" (lim == 20 ? "instruction" : "description") " max " lim ")")
+            add(line_of(SPOS[i]), "sentence-length", c " words (" (lim == 20 ? "instruction" : "description") " max " lim "): " first_words(SENT[i]))
     }
     plen = 0
     para = ""
@@ -199,14 +227,16 @@ function last_word(s) {
     return s
 }
 
-# True if w is in s with no character of class cls directly before or after it.
-function has_word(s, w, cls,   p, off) {
+# Finds w in s where the character before it matches the class before and the
+# text after it matches the pattern after. Returns the text found, or "".
+function find_word(s, w, before, after,   p, off) {
     off = 0
     while ((p = index(substr(s, off + 1), w)) > 0) {
-        if (substr(s, off + p - 1, 1) !~ cls && substr(s, off + p + length(w), 1) !~ cls) return 1
         off += p
+        if (substr(s, off - 1, 1) ~ before && match(substr(s, off + length(w)), after))
+            return substr(s, off, length(w) + RLENGTH - 1)
     }
-    return 0
+    return ""
 }
 
 # "not only X but Y": "but" must start within 80 characters, in the same sentence.
@@ -226,12 +256,12 @@ function ing_form(no, w,   lw) {
     if (!(lw in ING_NOUN_OK) && length(lw) > 4) add(no, "ing-form", "'-ing' verb form: '" w "'")
 }
 
-function check_line(no, line, raw,   low, i) {
+function check_line(no, line, raw,   low, i, m) {
     low = " " tolower(line) " "
     ORIG = " " line " "
 
     if (index(line, ";")) add(no, "semicolon", "semicolon: write two sentences or a list")
-    if (index(line, "—") || index(line, " -- ")) add(no, "dash", "em dash as sentence glue: use a period or colon")
+    if (index(line, "—") || index(line, " – ") || index(line, " -- ")) add(no, "dash", "dash as sentence glue: use a period or colon")
 
     start_scan(low)
     while (next_match(PASSIVE))
@@ -256,10 +286,10 @@ function check_line(no, line, raw,   low, i) {
     }
 
     for (i = 1; i <= nph; i++)
-        if (has_word(low, PHRASAL[i], W)) add(no, "phrasal-verb", "phrasal verb '" PHRASAL[i] "'")
+        if (find_word(low, PHRASAL[i], NW, "^" NW) != "") add(no, "phrasal-verb", "phrasal verb '" PHRASAL[i] "'")
 
     for (i = 1; i <= ntell; i++)
-        if (i == 2 ? not_only_but(low) : low ~ TRE[i]) add(no, TRULE[i], TMSG[i])
+        if (TRE[i] == "" ? not_only_but(low) : low ~ TRE[i]) add(no, TRULE[i], TMSG[i])
 
     if (index(raw, "“") || index(raw, "”") || index(raw, "‘") || index(raw, "’"))
         add(no, "curly-quotes", "curly quotes: use straight quotes in Markdown and code")
@@ -269,7 +299,7 @@ function check_line(no, line, raw,   low, i) {
         if (low ~ NOUN_ONLY) add(no, "noun-only", "'check'/'test' used as a verb (STE: noun only)")
     }
     for (i = 1; i <= nsw; i++)
-        if (has_word(low, SWW[i], "[a-z0-9_-]")) add(no, "word", "'" SWW[i] "' -> " SWA[i])
+        if ((m = find_word(low, SWW[i], HY, SWE[i])) != "") add(no, "word", "'" m "' -> " SWA[i])
 }
 
 # Main loop: keep prose only. Skip front matter, code blocks, tables and indented code.
@@ -288,22 +318,32 @@ function check_line(no, line, raw,   low, i) {
 
     gsub(/`[^`]*`/, "CODE", line)
     line = unlink(line)
-    gsub(/https?:\/\/[^ \t]+/, "URL", line)
+    while (match(line, /https?:\/\/[^ \t]+/)) {
+        t = substr(line, RSTART, RLENGTH)
+        sub(/[.,;:!?)"']+$/, "", t)  # punctuation after a URL belongs to the sentence
+        line = substr(line, 1, RSTART - 1) "URL" substr(line, RSTART + length(t))
+    }
     if (line ~ /^[ \t]*([-*+]|[0-9]+[.)])[ \t]+/) {
         flush()
         sub(/^[ \t]*([-*+]|[0-9]+[.)])[ \t]+/, "", line)
     }
     sub(/^[ \t]*>[ \t]?/, "", line)
-    sub(/^#+[ \t]+/, "", line)
+    heading = sub(/^#+[ \t]+/, "", line)
+    if (heading) flush()
     gsub(/[*_]/, "", line)
+    gsub("’", "'", line)
+    gsub("‘", "'", line)
 
     if (line !~ /[^ \t]/) { flush(); next }
 
     t = line
     sub(/^[ \t]+/, "", t)
     sub(/[ \t]+$/, "", t)
-    if (!plen++) { pstart = NR; para = t } else para = para " " t
+    LNO[++plen] = NR
+    LPOS[plen] = (plen == 1) ? 1 : length(para) + 2
+    para = (plen == 1) ? t : para " " t
     check_line(NR, line, raw)
+    if (heading) flush()
 }
 
 END {
