@@ -23,8 +23,8 @@ These are the strongest and most frequent tells. Act on one sighting.
 
 ### §2. One-line closers and dramatic fragments
 
-**Watch for:** a one-sentence paragraph that repeats the paragraph before it; "That's the real win."; "That distinction matters."; "Let that sink in."; "Read that again."; the same closer after several sections; a sentence that names what an example just showed ("This shows the importance of..."); a row of fragments ("No setup. No config. No waiting."); one word in ALL CAPS or with periods (every. single. day.).
-**Problem:** The line asks the reader to pause on a claim instead of adding to it. A short sentence is fine when it carries a new fact. Cut a closer that repeats. Merge a row of fragments into one sentence with a real claim.
+**Watch for:** a one-sentence paragraph that repeats the paragraph before it; "That's the real win."; "That distinction matters."; "Let that sink in."; "Read that again."; the same closer after several sections; a sentence that names what an example just showed ("This shows the importance of..."); a row of fragments ("No setup. No config. No waiting."); one word in ALL CAPS or with periods (every. single. day.); a question that the next words answer ("The result? Faster builds."); a last paragraph that sums up what the text just said ("In summary", "In conclusion").
+**Problem:** The line asks the reader to pause on a claim instead of adding to it. A short sentence is fine when it carries a new fact. Cut a closer that repeats. Merge a row of fragments into one sentence with a real claim. Turn a question and its answer into one statement. Cut a summary that adds nothing to a short text.
 **Before:**
 > We moved the API to edge workers. Latency dropped to 40 ms. No cold starts. No regions. No excuses.
 >
@@ -37,6 +37,10 @@ These are the strongest and most frequent tells. Act on one sighting.
 > Retries hide short outages. That's the real win.
 **After:**
 > Caching cuts repeat work. Retries hide short outages.
+**Before (question and answer):**
+> We moved the build to a cache. The result? Builds that finish in 40 seconds.
+**After:**
+> We moved the build to a cache. Builds now finish in 40 seconds.
 
 ### §3. Sayings that sound deep
 
@@ -49,7 +53,7 @@ These are the strongest and most frequent tells. Act on one sighting.
 
 ### §4. Staged run-up before the point
 
-**Watch for:** Let's dive in, let's explore, let's break this down, here's what you need to know, now let's look at, without further ado, heads up, quick note, Honestly?, Look, Here's the thing, The thing is, Let's be honest, Real talk
+**Watch for:** Let's dive in, let's explore, let's break this down, here's what you need to know, now let's look at, without further ado, heads up, quick note, Honestly?, Look, Here's the thing, Here's the kicker, The thing is, Let's be honest, Real talk
 **Problem:** The writer announces the point instead of making it. Remove the run-up. "Honestly" inside a casual sentence is normal. The tell is the stand-alone opener before a routine claim.
 **Before:**
 > Let's dive into how rate limiting works. Here's what you need to know.
@@ -75,7 +79,7 @@ Shapes and punctuation used everywhere, whether the meaning needs them or not.
 
 ### §6. Forced triads
 
-**Problem:** Ideas come in threes to sound complete. It can be one phrase ("fast, reliable, and scalable"), three parallel examples, or three short facts and a lesson. Check that each item adds a distinct idea. Keep three only when the meaning has three parts. Two or four is fine. If the list is itself a claim in the source (stated values, named features), keep its content in plainer form. Cutting it drops a fact.
+**Problem:** Ideas come in threes to sound complete. It can be one phrase ("fast, reliable, and scalable"), three parallel examples, or three short facts and a lesson. Check that each item adds a distinct idea. Keep three only when the meaning has three parts. Two or four is fine. If the list is itself a claim in the source (stated values, named features), keep its content in plainer form. Cutting it drops a fact. A count before the list ("three core pillars", "five key takeaways") is the same habit. Cut the count unless the reader needs the number.
 **Before:**
 > The new dashboard is fast, intuitive, and powerful. It brings clarity, speed, and confidence to your team.
 **After:**
@@ -96,7 +100,7 @@ Shapes and punctuation used everywhere, whether the meaning needs them or not.
 ### §8. Dashes as the universal connector
 
 **Rule:** The final text has no em dashes (—) or en dashes (–), unless the writer's sample uses them. Then match the sample's rate. Replace each dash with a period, comma, colon or parentheses, or rewrite the sentence. This includes spaced dashes and ` -- `. Leave dashes in code, commands, paths and URLs alone.
-**Problem:** A dash lets the writer skip the choice of how two clauses relate, so models use it everywhere. Many editors use dashes too, so one dash is *weak alone*. A text full of them is not.
+**Problem:** A dash lets the writer skip the choice of how two clauses relate. Models used it everywhere until late 2026. Wikipedia now lists heavy dash use as a historical sign (2022 to September 2026). It reports that newer models avoid dashes and use more commas and periods instead. Many editors use dashes too. So a dash does not prove that a machine wrote the text, and one dash is *weak alone*. Treat this as a style rule. Pick the mark that shows how the two parts relate, and do not turn every dash into a period.
 **Before:**
 > The migration — which took six weeks — is done. The old cluster -- finally -- is gone.
 **After:**
@@ -235,8 +239,8 @@ Remove these outright. Nothing here needs rewriting.
 
 ### §22. Chatbot residue
 
-**Watch for:** I hope this helps, Of course!, Certainly!, Great question!, You're absolutely right, Would you like..., Want me to...?, Should I continue?, let me know, here is a...
-**Problem:** A chatbot's greeting, praise, offer or sign-off stays in text that should stand alone. It is the most certain tell and the easiest to miss when it wraps real content. Remove the wrapper. Keep the content.
+**Watch for:** I hope this helps, Of course!, Certainly!, Great question!, You're absolutely right, Would you like..., Want me to...?, Should I continue?, let me know, here is a..., a placeholder such as [Your Name] or [Insert date], a link with `utm_source=chatgpt.com`, a citation mark such as `oaicite` or `turn0search0`
+**Problem:** A chatbot's greeting, praise, offer or sign-off stays in text that should stand alone. It is the most certain tell and the easiest to miss when it wraps real content. Remove the wrapper. Keep the content. Remove link tags and citation marks. Fill a placeholder only with a fact from the source. If the source does not have it, leave the placeholder and say so in your note.
 **Before:**
 > Great question! Here's an overview of how JWTs work. A JWT has three parts: a header, a payload and a signature. I hope this helps! Let me know if you'd like more detail.
 **After:**
