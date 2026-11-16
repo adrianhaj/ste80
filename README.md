@@ -17,7 +17,7 @@ The skill text comes from [Dodaios/ste80-humanizer](https://github.com/Dodaios/s
 **After:**
 > A liveness probe tells the kubelet if a container is healthy. If the probe fails, the kubelet restarts the container. This keeps the application available.
 >
-> A bad probe can also cause many restarts. For example, a timeout that is too short makes healthy containers fail the probe. To prevent this, set `initialDelaySeconds` and `failureThreshold` to values that fit your application.
+> But a misconfigured probe can cause cascading restarts. To prevent this, tune parameters like `initialDelaySeconds` and `failureThreshold` with care.
 
 The goal is text that people read easily. The skill does not try to get past AI detectors.
 
