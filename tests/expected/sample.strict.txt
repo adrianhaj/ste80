@@ -1,0 +1,63 @@
+tests/fixtures/sample.md: 62 finding(s) | 35 sentences, avg 8.2 words, max 35
+     6  ing-form         '-ing' verb form: 'Getting'
+     8  chatbot          chatbot opener: delete
+     8  contraction      contraction (not permitted in strict mode)
+     8  not-x-but-y      'not just X, but Y' framing: state the point
+     8  paragraph-length 7 sentences in one paragraph (max 6)
+     8  run-up           run-up before the point: start with the point
+     9  dash             em dash as sentence glue: use a period or colon
+     9  not-x-but-y      'not just X, but Y' framing: state the point
+     9  not-x-but-y      'not just X but Y' framing: state the point
+     9  semicolon        semicolon: write two sentences or a list
+     9  word             'robust' -> strong, reliable
+    10  fake-depth       fake depth: say the plain claim
+    10  passive          possible passive voice: 'is validated'
+    10  passive          possible passive voice: 'been forwarded'
+    10  perfect-tense    perfect tense: 'has been'
+    11  ing-form         '-ing' verb form: 'ensuring'
+    11  ing-rider        shallow '-ing' rider: delete or make it a sentence
+    11  passive          possible passive voice: 'being written'
+    11  progressive      progressive tense: 'is running'
+    13  ing-form         '-ing' verb form: 'restarting'
+    13  ing-form         '-ing' verb form: 'calling'
+    13  paragraph-length 9 sentences in one paragraph (max 6)
+    13  phrasal-verb     phrasal verb 'set up'
+    13  phrasal-verb     phrasal verb 'find out'
+    14  passive          possible passive voice: 'was linked'
+    14  stacked-hedge    stacked hedge: keep one hedge
+    14  vague-association vague connection: name the relation (founded, caused, part of)
+    14  vague-authority  vague authority: name the source or delete
+    14  word             'could' -> can
+    15  closer           dramatic closer: delete
+    15  contraction      contraction (not permitted in strict mode)
+    15  hyphen-pair      drop the hyphen after the noun ('is well documented')
+    15  inflation        inflated significance: say what happened
+    15  word             'pivotal' -> important
+    16  chatbot          chatbot closer: delete
+    16  knowledge-hedge  knowledge-limit hedge: delete
+    16  modal-passive    modal + passive: 'can be changed'
+    16  passive          possible passive voice: 'be changed'
+    16  strawman         arguing with nobody: remove
+    17  curly-quotes     curly quotes: use straight quotes in Markdown and code
+    17  meta             writing about the text: give the content
+    17  noun-only        'check'/'test' used as a verb (STE: noun only)
+    17  word             'utilize' -> use
+    17  word             'in order to' -> to
+    19  sentence-length  35 words (instruction max 20)
+    19  sentence-length  30 words (description max 25)
+    22  paragraph-length 7 sentences in one paragraph (max 6)
+    24  word             'e.g.' -> for example
+    26  contraction      contraction (not permitted in strict mode)
+    26  noun-only        'check'/'test' used as a verb (STE: noun only)
+    26  semicolon        semicolon: write two sentences or a list
+    27  noun-only        'check'/'test' used as a verb (STE: noun only)
+    27  word             'need' -> necessary (adj)
+    27  word             'may' -> can
+    32  contraction      contraction (not permitted in strict mode)
+    32  modal-passive    modal + passive: 'should be noted'
+    32  not-x-but-y      'this isn't about X' framing: state the point
+    32  passive          possible passive voice: 'be noted'
+    32  word             'it should be noted' -> (delete)
+    32  word             'should' -> must
+    43  dash             em dash as sentence glue: use a period or colon
+    43  passive          possible passive voice: 'is closed'
