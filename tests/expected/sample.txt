@@ -1,4 +1,5 @@
-tests/fixtures/sample.md: 55 finding(s) | 39 sentences, avg 7.7 words, max 35
+tests/fixtures/sample.md: 58 finding(s) | 39 sentences, avg 7.7 words, max 35
+     6  heading-style    Title Case heading: use sentence case
      6  ing-form         '-ing' verb form: 'Getting'
      8  chatbot          chatbot opener: delete
      8  not-x-but-y      'not just X, but Y' framing: state the point
@@ -24,6 +25,7 @@ tests/fixtures/sample.md: 55 finding(s) | 39 sentences, avg 7.7 words, max 35
     13  paragraph-length 9 sentences in one paragraph (max 6)
     13  phrasal-verb     phrasal verb 'set up'
     13  phrasal-verb     phrasal verb 'find out'
+    13  rhythm           4 sentences in a row of about 7 words: vary the length
     14  passive          possible passive voice: 'was linked'
     14  stacked-hedge    stacked hedge: keep one hedge
     14  vague-association vague connection: name the relation (founded, caused, part of)
@@ -43,6 +45,7 @@ tests/fixtures/sample.md: 55 finding(s) | 39 sentences, avg 7.7 words, max 35
     17  word             'in order to' -> to
     19  sentence-length  35 words (instruction max 20): Run the import, then wait ...
     20  sentence-length  30 words (description max 25): The gateway reads the token, ...
+    22  fragments        one word per sentence for emphasis: write one sentence
     22  paragraph-length 7 sentences in one paragraph (max 6)
     26  semicolon        semicolon: write two sentences or a list
     32  modal-passive    modal + passive: 'should be noted'

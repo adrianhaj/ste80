@@ -85,6 +85,59 @@ ok "a URL does not take the period that ends the sentence" $?
 finds "dash" "The pump is open – the valve is shut." && exits_on 0 "It takes 10–15 minutes."
 ok "a spaced en dash is a dash, a number range is not" $?
 
+finds "not-x-but-y" "This doesn't mean tests are optional. It means the linter runs first." &&
+    finds "clipped-tail" "The form fills in your address, no typing." && exits_on 0 "The form needs no typing."
+ok "a contrast across two sentences and a clipped tail are flagged" $?
+
+finds "fragments" "No setup. No config. No waiting." && finds "fragments" "We ship every. single. day." &&
+    exits_on 0 "The tool needs no setup. Start it now."
+ok "a row of fragments is flagged" $?
+
+finds "closer" "That distinction matters." && finds "run-up" "Here's what you need to know." &&
+    finds "run-up" "Is it fast? Honestly? It depends." && finds "run-up" "Here's the kicker." &&
+    finds "fake-depth" "Observability is the language of trust." && finds "strawman" "I'm not saying it is slow." &&
+    finds "strawman" "You might think it is slow." && finds "strawman" "A tempting approach would be to wait." &&
+    finds "summary" "In conclusion, the tool works."
+ok "more staging phrases of the skill are flagged" $?
+
+finds "stacked-hedge" "In some cases it may fail." && finds "inflation" "It reflects a broader shift." &&
+    finds "inflation" "It has a lasting legacy." && finds "vague-authority" "Experts argue that it works." &&
+    finds "vague-authority" "Industry reports show growth." && finds "chatbot" "Let me know." &&
+    finds "knowledge-hedge" "Details are limited." && finds "meta" "The table below compares the options."
+ok "more inflation, authority and leftover phrases of the skill are flagged" $?
+
+finds "'garnered' -> get" "It garnered support." && finds "'bolstered' -> support" "It bolstered trust." &&
+    finds "'deep dive'" "This is a deep dive." && finds "'interplay'" "The interplay is new." &&
+    finds "'quietly'" "It quietly grew." && finds "'enduring'" "It has enduring value." &&
+    finds "'aligns with'" "It aligns with the plan."
+ok "the other AI words of the skill are flagged" $?
+
+finds "repeated-opening" "It reads the config. It checks the schema. It starts the server." &&
+    exits_on 0 "It reads the config. Then it checks the schema. It starts the server."
+ok "three sentences in a row that start with the same pronoun are flagged" $?
+
+finds "rhythm" "The cat sat on the mat today. The dog ran to the park now. The bird flew over the big tree. The fish swam in the cold pond." &&
+    exits_on 0 "The cat sat on the mat. The dog ran to the park and then came home again. The bird flew away. The fish swam in the cold pond all day."
+ok "four sentences in a row of the same length are flagged" $?
+
+finds "bold-label" '- **Speed:** It is fast.
+- **Safety:** It is safe.
+- **Cost:** It is cheap.' && exits_on 0 '- **Speed:** It is fast.
+- It is safe.'
+ok "a bold label on three list items in a row is flagged" $?
+
+finds "heading-style" "## Getting Started With The Tool" && finds "heading-style" "## Install the tool →" &&
+    finds "emoji" "## 🚀 Install the tool" && finds "emoji" "✅ It is fast." && exits_on 0 "## Install the tool"
+ok "Title Case, arrows and emoji as decoration are flagged" $?
+
+# shellcheck disable=SC2016
+finds "tool-residue" "See https://example.com/a?utm_source=chatgpt.com for more." &&
+    finds "tool-residue" "Dear [Your Name], thank you." &&
+    finds "tool-residue" "It is fast. :contentReference[oaicite:0]{index=0}" &&
+    exits_on 0 'The link has `utm_source=chatgpt.com` in it.' &&
+    exits_on 0 "See [your guide](https://example.com/g) first."
+ok "chatbot link tags, placeholders and citation marks are flagged" $?
+
 cat tests/fixtures/clean.md | check /dev/stdin >/dev/null 2>&1
 ok "a file that is not a regular file can be read" $?
 

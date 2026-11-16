@@ -68,6 +68,9 @@ BEGIN {
     swaps("intricate=complex|meticulous=careful|vibrant=(delete)|enhance=improve|groundbreaking=(fact or delete)")
     swaps("cutting-edge=(fact or delete)|world-class=(fact or delete)|best-in-class=(fact or delete)")
     swaps("renowned=(fact or delete)|stunning=(delete)|breathtaking=(delete)|serves as=is|stands as=is|boasts=has")
+    swaps("functions as=is|operates as=is|bolster=support|garner=get|interplay=(say how the two affect each other)")
+    swaps("quietly=(delete, unless it is about sound)|enduring=lasting, or delete|deep dive=look, review")
+    swaps("align with=agree with, match|aligns with=agrees with, matches|aligned with=agreed with, matched")
     if (strict) {
         swaps("need=necessary (adj)|may=can|might=can|could=can|should=must|shall=must|would=will|since=because", 1)
         swaps("both=the two|further=more|additional=more|acceptable=permitted|main=primary|portion=part", 1)
@@ -80,22 +83,33 @@ BEGIN {
     set(ING_NOUN_OK, "during following opening remaining according something nothing anything everything thing things string strings bring ring spring king wing sing single logging caching routing testing debugging networking staging setting settings mapping warning warnings building meaning morning evening ceiling padding spacing rendering hosting tooling training pricing billing encoding streaming scheduling parsing linting formatting being missing existing incoming outgoing pending")
     set(NOT_PARTICIPLE, "different present absent current recent frequent silent independent efficient sufficient apparent consistent important relevant urgent evident excellent competent dependent transparent open even often golden hidden sudden wooden own down shown known unknown brown grown drawn built content intent event agent client point front want difficult")
     set(IMPERATIVE, "add apply attach click close configure connect copy create delete disconnect do download edit enter examine find get give install keep let make measure monitor move open push pull put read remove replace restart run select send set start stop turn type update upload use write if when before after to")
+    set(PRONOUN, "it this he she they we i you")
+    # ponytail: a short list of the emoji that chatbots use most, not all emoji. LC_ALL=C has no class for them.
+    ndecor = split("🚀 ✅ 💡 🙏 👇 👉 ✨ 🔥 📌 🎯 ⚡ ⭐ 🎉 ❌", DECOR, " ")
 
     tell(NW "(it'?s|it is|this is|that'?s|is)" WS "not" WS "(just|only|merely|simply|about)" NW, "not-x-but-y", "'not just X, but Y' framing: state the point")
     tell("", "not-x-but-y", "'not just X but Y' framing: state the point")  # no pattern: see not_only_but()
     tell(NW "isn'?t" WS "(just" WS ")?about" NW, "not-x-but-y", "'this isn't about X' framing: state the point")
+    tell(NW "(doesn'?t|does not)" WS "mean" NW ".*[.]" WS "(it|this|that)" WS "means" NW, "not-x-but-y", "contrast split across two sentences: state the point")
+    tell("," WS "no" WS W "+[.!] ", "clipped-tail", "clipped negative tail (', no guessing'): write the full clause")
+    tell(NW "no" WS W "+(" WS W "+)?[.!]" WS "no" NW, "fragments", "row of fragments: write one sentence with a claim")
+    tell(NW W "+[.]" WS W "+[.]" WS W "+[.]", "fragments", "one word per sentence for emphasis: write one sentence")
     tell("^ (great question|certainly|of course|sure|absolutely)[!,.]", "chatbot", "chatbot opener: delete")
-    tell(NW "(i hope this helps|let me know if|would you like me to|feel free to|happy to help)" NW, "chatbot", "chatbot closer: delete")
-    tell(NW "(let'?s (dive|delve|break (this|it) down|explore|unpack)|here'?s the thing|without further ado)" NW, "run-up", "run-up before the point: start with the point")
-    tell(NW "(at its core|the real question is|fundamentally|at the end of the day)" NW, "fake-depth", "fake depth: say the plain claim")
-    tell(NW "(let that sink in|and that changes everything|that'?s the real (win|story)|read that again)" NW, "closer", "dramatic closer: delete")
-    tell(NW "(don'?t get me wrong|to be clear|one might be tempted)" NW, "strawman", "arguing with nobody: remove")
-    tell(NW "(as of my (last|latest) (update|training)|based on (the )?available information)" NW, "knowledge-hedge", "knowledge-limit hedge: delete")
+    tell(NW "(i hope this helps|let me know|would you like me to|want me to|should i continue|you'?re absolutely right|feel free to|happy to help)" NW, "chatbot", "chatbot closer: delete")
+    tell(NW "(let'?s (dive|delve|break (this|it) down|explore|unpack|be honest)|here'?s (the thing|the kicker|what you need to know)|real talk|without further ado)" NW, "run-up", "run-up before the point: start with the point")
+    tell(NW "honestly[?]", "run-up", "run-up before the point: start with the point")
+    tell(NW "(at its core|the real question is|fundamentally|at the end of the day|the heart of the matter|is the (language|currency|architecture) of)" NW, "fake-depth", "fake depth: say the plain claim")
+    tell(NW "(let that sink in|and that changes everything|that'?s the real (win|story)|read that again|that distinction matters)" NW, "closer", "dramatic closer: delete")
+    tell("^ (in conclusion|in summary|to sum up|to summarize),", "summary", "signposted summary: cut it if it repeats the text")
+    tell(NW "(don'?t get me wrong|to be clear|one might be tempted|i'?m not saying|i am not saying|this is not to say|a tempting approach would be|you might think|some might say)" NW, "strawman", "arguing with nobody: remove")
+    tell(NW "(as of my (last|latest) (update|training)|based on (the )?available information|details are limited|it is believed that|maintains a low profile)" NW, "knowledge-hedge", "knowledge-limit hedge: delete")
     tell(NW "in this (guide|article|section|post),? (we|i)('ll| will)" NW, "meta", "writing about the text: give the content")
+    tell(NW "((table|section|diagram|list) (below|above) (compares|summarizes)|this section is organized)" NW, "meta", "writing about the text: give the content")
     tell(NW "(could|may|might) (potentially|possibly|arguably)" NW, "stacked-hedge", "stacked hedge: keep one hedge")
-    tell(NW "(experts|studies|many people|observers) (say|agree|show|believe|suggest)" NW, "vague-authority", "vague authority: name the source or delete")
+    tell(NW "in some cases,? it (may|might|could)" NW, "stacked-hedge", "stacked hedge: keep one hedge")
+    tell(NW "(experts|studies|many people|observers|some critics|industry reports|several publications)" WS "(have" WS ")?(say|agree|argue|show|believe|suggest|note|noted|cited)" NW, "vague-authority", "vague authority: name the source or delete")
     tell("," WS "(highlighting|underscoring|emphasizing|ensuring|reflecting|showcasing|fostering|cultivating|contributing to)" NW, "ing-rider", "shallow '-ing' rider: delete or make it a sentence")
-    tell(NW "((plays|play|played) a (pivotal|crucial|key|vital) role|marks? a (significant|major) milestone|the future looks bright)" NW, "inflation", "inflated significance: say what happened")
+    tell(NW "((plays|play|played) a (pivotal|crucial|key|vital) role|marks? a (significant|major) milestone|the future looks bright|reflects a broader|(lasting|enduring) legacy|setting the stage for|indelible mark|exciting times)" NW, "inflation", "inflated significance: say what happened")
     tell(NW "((is|are|was|were) associated with|in connection with|linked to|tied to)" NW, "vague-association", "vague connection: name the relation (founded, caused, part of)")
     tell(NW "(is|are|was|were|be)(" WS W "+ly)?" WS "(high-quality|well-known|well-documented|long-term|real-time|well-tested|client-facing)" NW, "hyphen-pair", "drop the hyphen after the noun ('is well documented')")
     tell("^ (that'?s|this is) (the real|why it|what) ", "closer", "possible one-line closer: cut it if it repeats the point")
@@ -191,7 +205,7 @@ function imperative(s) {
     return match(s, WORD) && (tolower(substr(s, RSTART, RLENGTH)) in IMPERATIVE)
 }
 
-function flush(   n, i, c, lim) {
+function flush(   n, i, c, lim, fw, k, lo, hi, even, was_even) {
     if (!plen) return
     n = split_sentences(para)
     npara++
@@ -204,9 +218,41 @@ function flush(   n, i, c, lim) {
         lim = imperative(SENT[i]) ? 20 : 25
         if (c > lim + (strict ? 0 : 3))
             add(line_of(SPOS[i]), "sentence-length", c " words (" (lim == 20 ? "instruction" : "description") " max " lim "): " first_words(SENT[i]))
+
+        fw = match(SENT[i], WORD) ? tolower(substr(SENT[i], RSTART, RLENGTH)) : ""
+        sub(/'.*/, "", fw)
+        FW[i] = fw
+        if (i >= 3 && (fw in PRONOUN) && FW[i - 1] == fw && FW[i - 2] == fw && !(i > 3 && FW[i - 3] == fw))
+            add(line_of(SPOS[i - 2]), "repeated-opening", "3 sentences in a row start with '" fw "': merge them or start with the action")
+
+        # ponytail: a window of 4 sentences and a band of 2 words. Use the spread of the whole text if this is too blunt.
+        LEN[i] = c
+        if (i >= 4) {
+            lo = hi = c
+            for (k = i - 3; k < i; k++) {
+                if (LEN[k] < lo) lo = LEN[k]
+                if (LEN[k] > hi) hi = LEN[k]
+            }
+            even = (lo >= 5 && hi - lo <= 2)
+            if (even && !was_even) add(line_of(SPOS[i - 3]), "rhythm", "4 sentences in a row of about " lo " words: vary the length")
+            was_even = even
+        }
     }
     plen = 0
     para = ""
+}
+
+# ponytail: counts only words of four letters or more, so "Getting Started with the CLI" passes. Add a list of small words if that matters.
+function title_case(s,   n, i, w, cap) {
+    n = split(s, w, " ")
+    cap = 0
+    for (i = 1; i <= n; i++) {
+        gsub(/[^A-Za-z]/, "", w[i])
+        if (length(w[i]) < 4 || w[i] !~ /[a-z]/) continue
+        if (w[i] ~ /^[a-z]/) return 0
+        cap++
+    }
+    return cap >= 4
 }
 
 # Next match of re in the padded lowercase line. re must start and end with one
@@ -294,6 +340,13 @@ function check_line(no, line, raw,   low, i, m) {
     if (index(raw, "“") || index(raw, "”") || index(raw, "‘") || index(raw, "’"))
         add(no, "curly-quotes", "curly quotes: use straight quotes in Markdown and code")
 
+    for (i = 1; i <= ndecor; i++)
+        if (index(line, DECOR[i])) { add(no, "emoji", "emoji as decoration: remove it"); break }
+    if (heading) {
+        if (index(line, "→") || index(line, "➡")) add(no, "heading-style", "arrow in a heading: remove it")
+        if (title_case(line)) add(no, "heading-style", "Title Case heading: use sentence case")
+    }
+
     if (strict) {
         if (low ~ CONTRACTION) add(no, "contraction", "contraction (not permitted in strict mode)")
         if (low ~ NOUN_ONLY) add(no, "noun-only", "'check'/'test' used as a verb (STE: noun only)")
@@ -317,15 +370,22 @@ function check_line(no, line, raw,   low, i, m) {
     if (code || substr(t, 1, 1) == "|" || substr(line, 1, 4) == "    ") { flush(); next }
 
     gsub(/`[^`]*`/, "CODE", line)
+    t = tolower(line)  # link targets are still here
+    if (t ~ /utm_source=(chatgpt|openai|copilot|perplexity|claude|gemini)/ || t ~ /oaicite|contentreference|turn[0-9]+(search|view|news|file)[0-9]+/)
+        add(NR, "tool-residue", "leftover from a chatbot (link tag or citation mark): remove it")
+    if (t ~ /\[(your|insert|company|recipient|client)[ a-z'-]*\]([^(]|$)/)
+        add(NR, "tool-residue", "placeholder text: fill it in or remove it")
     line = unlink(line)
     while (match(line, /https?:\/\/[^ \t]+/)) {
         t = substr(line, RSTART, RLENGTH)
         sub(/[.,;:!?)"']+$/, "", t)  # punctuation after a URL belongs to the sentence
         line = substr(line, 1, RSTART - 1) "URL" substr(line, RSTART + length(t))
     }
+    labeled = 0
     if (line ~ /^[ \t]*([-*+]|[0-9]+[.)])[ \t]+/) {
         flush()
         sub(/^[ \t]*([-*+]|[0-9]+[.)])[ \t]+/, "", line)
+        labeled = (line ~ /^\*\*[^*]+(:\*\*|\*\*:)/)
     }
     sub(/^[ \t]*>[ \t]?/, "", line)
     heading = sub(/^#+[ \t]+/, "", line)
@@ -335,6 +395,12 @@ function check_line(no, line, raw,   low, i, m) {
     gsub("‘", "'", line)
 
     if (line !~ /[^ \t]/) { flush(); next }
+
+    if (!labeled) nlabel = 0
+    else {
+        if (++nlabel == 1) label_line = NR
+        if (nlabel == 3) add(label_line, "bold-label", "bold label on every list item: remove the bold if the labels add nothing")
+    }
 
     t = line
     sub(/^[ \t]+/, "", t)
