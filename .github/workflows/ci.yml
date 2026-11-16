@@ -24,6 +24,18 @@ jobs:
             STE_AWK="$awk" sh tests/test_ste_check.sh
           done
 
+  test-windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Checker tests in Git Bash
+        run: sh tests/test_ste_check.sh
+
   validate:
     runs-on: ubuntu-latest
     steps:
