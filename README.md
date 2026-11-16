@@ -118,8 +118,8 @@ cat draft.txt | sh skills/ste80/scripts/ste_check.sh -
 
 | Pass | What the checker flags |
 |---|---|
-| 1 | not-X-but-Y, chatbot phrases, run-ups, fake depth, stacked hedges, vague authority and association, "-ing" riders, inflated claims, AI words, hyphen pairs, curly quotes |
-| 2 | sentence and paragraph length, semicolons, dashes, passive voice, perfect and progressive tenses, "-ing" forms, phrasal verbs |
+| 1 | not-X-but-Y, clipped tails, rows of fragments, closers, chatbot phrases, run-ups, fake depth, stacked hedges, vague authority and association, "-ing" riders, inflated claims, AI words, repeated openings, hyphen pairs, bold labels, Title Case and emoji in headings, curly quotes, leftovers from a chatbot (link tags, placeholders, citation marks) |
+| 2 | sentence and paragraph length, sentences of the same length in a row, semicolons, dashes, passive voice, perfect and progressive tenses, "-ing" forms, phrasal verbs |
 
 The exit code is 0 for no findings, 1 for findings and 2 for a usage error. The checker is a heuristic. It is not an AI detector and it is not a compliance checker.
 
