@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: light-touch-email
+expected_outcome: |
+  An email with the chatbot wrapper, the not-X-but-Y sentence and "testament" removed, and nothing else changed: the greeting, the sign-off, the passive two-idea sentence about the corrected invoice, 4,850 EUR and 10 April all stay.

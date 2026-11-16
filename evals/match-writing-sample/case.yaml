@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: match-writing-sample
+expected_outcome: |
+  An update in the voice of the sample: first person, casual, contractions, a dash where the sample would use one, no stock words, every fact from the draft (new cluster, 180 ms to 95 ms, reindex job 6 hours, next sprint) and nothing from the sample.
