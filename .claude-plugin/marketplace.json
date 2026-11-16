@@ -1,0 +1,16 @@
+{
+  "name": "ste80",
+  "owner": {
+    "name": "adrianhaj"
+  },
+  "metadata": {
+    "description": "STE80, a humanizer skill built on the \"80% of the way to ASD-STE100\" method."
+  },
+  "plugins": [
+    {
+      "name": "ste80",
+      "source": "./",
+      "description": "Removes AI tells and rebuilds sentences in the style of Simplified Technical English, without changing the facts."
+    }
+  ]
+}

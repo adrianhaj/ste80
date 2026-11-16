@@ -1,0 +1,10 @@
+{
+  "name": "ste80",
+  "version": "0.1.0",
+  "description": "STE80: rewrite AI-sounding text so it reads like a careful person wrote it, 80% of the way to ASD-STE100.",
+  "author": {
+    "name": "adrianhaj"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/adrianhaj/ste80"
+}
