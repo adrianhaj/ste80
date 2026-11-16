@@ -11,6 +11,8 @@ permissions:
 
 jobs:
   release:
+    # A manual run on another branch must not tag a commit that is not on main.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -20,7 +22,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          version=$(jq -r .version .claude-plugin/plugin.json)
+          version=$(jq -er .version .claude-plugin/plugin.json)
           tag="ste80--v$version"
           if gh release view "$tag" >/dev/null 2>&1; then
             echo "$tag is already released"
